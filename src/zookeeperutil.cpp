@@ -2,6 +2,7 @@
 #include "mprpcapplication.h"
 #include <semaphore.h>
 #include <iostream>
+#include "logger.h"
 
 // 全局的watcher观察器 zkserver给zkclient的通知（也就是回调函数）
 void global_watcher(zhandle_t* zh, int type, 
@@ -45,7 +46,8 @@ void ZkClient::Start()
     m_zhandle = zookeeper_init(connstr.c_str(), global_watcher, 30000, nullptr, nullptr, 0);
     if(nullptr == m_zhandle)
     {
-        std::cout << "zookeeper_init error!" << std::endl;
+        // std::cout << "zookeeper_init error!" << std::endl;
+        LOG_ERR("zookeeper_init error!");
         exit(EXIT_FAILURE);
     }
 
@@ -54,7 +56,8 @@ void ZkClient::Start()
     zoo_set_context(m_zhandle, &sem);   //给指定的文件句柄设置信号量
 
     sem_wait(&sem);
-    std::cout << "zookeeper_init seccess!" << std::endl;
+    // std::cout << "zookeeper_init seccess!" << std::endl;
+    LOG_INFO("zookeeper_init seccess!");
 }
 
 // 在zkserver上根据指定的path创建znode节点，state=0永久性节点，state=1临时性节点
@@ -72,12 +75,15 @@ void ZkClient::Create(const char* path, const char* data, int datalen, int state
             &ZOO_OPEN_ACL_UNSAFE, state, path_buffer, bufferlen);
         if(flag == ZOK)
         {
-            std::cout << "znode create success... path: " << path << std::endl;
+            // std::cout << "znode create success... path: " << path << std::endl;
+            LOG_INFO("znode create success... path: %s", path);
         }
         else
         {
-            std::cout << "flag" << flag << std::endl;
-            std::cout << "znode create error... path" << std::endl;
+            // std::cout << "flag" << flag << std::endl;
+            // std::cout << "znode create error... path: " << path << std::endl;
+            LOG_ERR("flag : %d", flag);
+            LOG_ERR("znode create error... path:  %s", path);
             exit(EXIT_FAILURE);
         }
     }
@@ -89,7 +95,8 @@ std::string ZkClient::GetData(const char* path){
     int bufferlen = sizeof(buffer);
     int flag = zoo_get(m_zhandle, path, 0, buffer, &bufferlen, nullptr);
     if(flag != ZOK){
-        std::cout << "get zmode error... path: " << path << std::endl;
+        // std::cout << "get zmode error... path: " << path << std::endl;
+        LOG_ERR("get zmode error... path: %s", path);
         return "";
     }
     else

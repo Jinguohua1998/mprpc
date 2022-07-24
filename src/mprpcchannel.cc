@@ -56,6 +56,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
     send_rpc_str += args_str;
 
     // 打印调试信息
+    /*
     std::cout << "========================================="<< std::endl;
     std::cout << "header_size: " << header_size << std::endl;
     std::cout << "rpc_header_str: " << rpc_header_str << std::endl;
@@ -63,6 +64,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
     std::cout << "method_name: " << method_name << std::endl;
     std::cout << "args_str: " << args_str << std::endl;
     std::cout << "========================================="<< std::endl;
+    */
 
     // 使用TCP编程实现rpc方法的远程调用
     int clientfd = socket(AF_INET, SOCK_STREAM, 0);

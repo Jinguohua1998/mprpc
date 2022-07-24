@@ -1,0 +1,2 @@
+cd ..
+./autobuild.sh
